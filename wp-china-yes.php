@@ -51,8 +51,8 @@ if (!class_exists('WP_CHINA_YES')) {
                 update_option("wpapi", get_option('wpapi') ?: '2');
                 update_option("super_admin", get_option('super_admin') ?: '2');
                 update_option("super_gravatar", get_option('super_gravatar') ?: '1');
-                update_option("super_googlefonts", get_option('super_googlefonts') ?: '2');
-                update_option("super_googleajax", get_option('super_googleajax') ?: '2');
+                /*update_option("super_googlefonts", get_option('super_googlefonts') ?: '2');
+                update_option("super_googleajax", get_option('super_googleajax') ?: '2');*/
 
 
                 /**
@@ -62,8 +62,8 @@ if (!class_exists('WP_CHINA_YES')) {
                     delete_option("wpapi");
                     delete_option("super_admin");
                     delete_option("super_gravatar");
-                    delete_option("super_googlefonts");
-                    delete_option("super_googleajax");
+                    /*delete_option("super_googlefonts");
+                    delete_option("super_googleajax");*/
                 });
 
 
@@ -88,7 +88,7 @@ if (!class_exists('WP_CHINA_YES')) {
                 if (get_option('super_admin') != 2 && !stristr($GLOBALS['wp_version'], 'alpha') && !stristr($GLOBALS['wp_version'], 'beta')) {
                     $this->page_str_replace('preg_replace', [
                         '~' . home_url('/') . '(wp-admin|wp-includes)/(css|js)/~',
-                        sprintf('https://a2.wp-china-yes.net/WordPress@%s/$1/$2/', $GLOBALS['wp_version'])
+                        sprintf('https://wp.hanada.ltd/WordPress@%s/$1/$2/', $GLOBALS['wp_version'])
                     ], get_option('super_admin'));
                 }
             }
@@ -114,7 +114,7 @@ if (!class_exists('WP_CHINA_YES')) {
                     /**
                      * super_googlefonts用以标记用户是否启用谷歌字体加速功能
                      */
-                    register_setting('wpcy', 'super_googlefonts');
+                    /*register_setting('wpcy', 'super_googlefonts');*/
 
                     add_settings_section(
                         'wpcy_section_main',
@@ -147,7 +147,7 @@ if (!class_exists('WP_CHINA_YES')) {
                         'wpcy_section_main'
                     );
 
-                    add_settings_field(
+                    /*add_settings_field(
                         'wpcy_field_select_super_googlefonts',
                         '加速谷歌字体',
                         [$this, 'field_super_googlefonts_cb'],
@@ -161,11 +161,11 @@ if (!class_exists('WP_CHINA_YES')) {
                         [$this, 'field_super_googleajax_cb'],
                         'wpcy',
                         'wpcy_section_main'
-                    );
+                    );*/
                 });
 
                 /**
-                 * 替换api.wordpress.org和downloads.wordpress.org为WP-China.org维护的大陆加速节点
+                 * 替换api.wordpress.org和downloads.wordpress.org为wp.hanada.ltd
                  * URL替换代码来自于我爱水煮鱼(http://blog.wpjam.com/)开发的WPJAM Basic插件
                  */
                 add_filter('pre_http_request', function ($preempt, $r, $url) {
@@ -173,11 +173,11 @@ if (!class_exists('WP_CHINA_YES')) {
                         return false;
                     }
                     if (get_option('wpapi') == 1) {
-                        $url = str_replace('api.wordpress.org', 'api.wp-china-yes.net', $url);
-                        $url = str_replace('downloads.wordpress.org', 'download.wp-china-yes.net', $url);
+                        $url = str_replace('api.wordpress.org', 'wp.hanada.ltd', $url);
+                        $url = str_replace('downloads.wordpress.org', 'wp.hanada.ltd', $url);
                     } else {
-                        $url = str_replace('api.wordpress.org', 'api.w.org.ibadboy.net', $url);
-                        $url = str_replace('downloads.wordpress.org', 'd.w.org.ibadboy.net', $url);
+                        $url = str_replace('api.wordpress.org', 'wp.hanada.ltd', $url);
+                        $url = str_replace('downloads.wordpress.org', 'wp.hanada.ltd', $url);
                     }
 
                     $curl_version = '1.0.0';
@@ -188,31 +188,26 @@ if (!class_exists('WP_CHINA_YES')) {
                         }
                     }
 
-                    // 如果CURL版本小于7.15.0，说明不支持SNI，无法通过HTTPS访问又拍云的节点，故而改用HTTP
-                    if (version_compare($curl_version, '7.15.0', '<')) {
-                        $url = str_replace('https://', 'http://', $url);
-                    }
-
                     return wp_remote_request($url, $r);
                 }, 1, 3);
             }
 
 
-            if ( ! (defined('DOING_AJAX') && DOING_AJAX)) {
+            //if ( ! (defined('DOING_AJAX') && DOING_AJAX)) {
                 /**
                  * 替换谷歌字体为WP-China.org维护的大陆加速节点
                  */
-                if (get_option('super_googlefonts') != 2) {
+             /*   if (get_option('super_googlefonts') != 2) {
                     $this->page_str_replace('str_replace', ['fonts.googleapis.com', 'googlefonts.wp-china-yes.net'], get_option('super_googlefonts'));
-                }
+                }*/
 
                 /**
                  * 替换谷歌前端公共库为WP-China.org维护的大陆加速节点
                  */
-                if (get_option('super_googleajax') != 2) {
+             /*   if (get_option('super_googleajax') != 2) {
                     $this->page_str_replace('str_replace', ['ajax.googleapis.com', 'googleajax.wp-china-yes.net'], get_option('super_googleajax'));
                 }
-            }
+            }*/
 
             /**
              * 替换G家头像为WP-China.org维护的大陆加速节点
@@ -226,7 +221,7 @@ if (!class_exists('WP_CHINA_YES')) {
                         '2.gravatar.com',
                         'secure.gravatar.com',
                         'cn.gravatar.com'
-                    ], 'gravatar.wp-china-yes.net', $avatar);
+                    ], 'gravatar.hanada.info', $avatar);
                 }, 1);
             }
         }
@@ -237,18 +232,18 @@ if (!class_exists('WP_CHINA_YES')) {
             <label>
                 <input type="radio" value="2" name="wpapi" <?php checked($wpapi, '2'); ?>>官方应用市场加速镜像
             </label>
-            <label>
+            <!--<label>
                 <input type="radio" value="1" name="wpapi" <?php checked($wpapi, '1'); ?>>本土应用市场（技术试验）
-            </label>
+            </label>-->
             <label>
                 <input type="radio" value="3" name="wpapi" <?php checked($wpapi, '3'); ?>>不接管应用市场
             </label>
             <p class="description">
                 <b>官方应用市场加速镜像</b>：直接从官方反代并在大陆分发，除了增加对WP-China-Yes插件的更新支持外未做任何更改
             </p>
-            <p class="description">
+            <!--<p class="description">
                 <b>本土应用市场</b>：与<a href="https://translate.wp-china.org/" target="_blank">本土翻译平台</a>深度整合，为大家提供基于AI翻译+人工辅助校准的全量作品汉化支持<b>（注意，这仍属于试验阶段，存在可能的接口报错、速度缓慢等问题，<a href="https://wp-china.org/forums/forum/228" target="_blank">问题反馈</a>）</b>
-            </p>
+            </p>-->
             <?php
         }
 
@@ -260,21 +255,21 @@ if (!class_exists('WP_CHINA_YES')) {
             $this->field_cb('super_gravatar' , '为Gravatar头像加速，推荐所有用户启用该选项');
         }
 
-        public function field_super_googlefonts_cb() {
+        /*public function field_super_googlefonts_cb() {
             $this->field_cb('super_googlefonts' , '请只在包含谷歌字体的情况下才启用该选项，以免造成不必要的性能损失');
-        }
+        }*/
 
-        public function field_super_googleajax_cb() {
+        /*public function field_super_googleajax_cb() {
             $this->field_cb('super_googleajax' , '请只在包含谷歌前端公共库的情况下才启用该选项，以免造成不必要的性能损失');
-        }
+        }*/
 
         public function options_page_html() {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 update_option("wpapi", sanitize_text_field($_POST['wpapi']));
                 update_option("super_admin", sanitize_text_field($_POST['super_admin']));
                 update_option("super_gravatar", sanitize_text_field($_POST['super_gravatar']));
-                update_option("super_googlefonts", sanitize_text_field($_POST['super_googlefonts']));
-                update_option("super_googleajax", sanitize_text_field($_POST['super_googleajax']));
+                /*update_option("super_googlefonts", sanitize_text_field($_POST['super_googlefonts']));
+                update_option("super_googleajax", sanitize_text_field($_POST['super_googleajax']));*/
 
                 echo '<div class="notice notice-success settings-error is-dismissible"><p><strong>设置已保存</strong></p></div>';
             }
@@ -295,11 +290,11 @@ if (!class_exists('WP_CHINA_YES')) {
                     ?>
                 </form>
             </div>
-            <p>
+            <!--<p>
                 <a href="https://wp-china.org" target="_blank">WP中国本土化社区</a>的使命是帮助WordPress在中国建立起良好的本土生态环境，以求推进行业整体发展，做大市场蛋糕。<br/>
                 特别感谢<a href="https://zmingcx.com/" target="_blank">知更鸟</a>、<a href="https://www.weixiaoduo.com/" target="_blank">薇晓朵团队</a>、<a href="https://www.appnode.com/" target="_blank">AppNode</a>在项目萌芽期给予的帮助。<br/>
                 项目所需服务器资源由<a href="https://www.vpsor.cn/" target="_blank">硅云</a>和<a href="https://www.upyun.com/" target="_blank">又拍云</a>提供。
-            </p>
+            </p>-->
             <?php
         }
 
